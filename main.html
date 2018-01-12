@@ -26,6 +26,29 @@
     }
   }
 
+  var bricks = [];
+  var brick = {
+    x: 280,
+    y: 200,
+    dx: 1,
+    dy: -1,
+    draw: function() {
+      ctx.beginPath();
+      ctx.rect(this.x, this.y, 50, 45);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+    },
+    move: function() {
+      this.x += -1;
+    }
+  }
+
+  function clone() {
+    var newBrick = Object.assign({}, brick);
+    bricks.push(newBrick);
+  }
+
  // move
   var rightPressed = false;
   var leftPressed = false;
@@ -69,15 +92,22 @@
       player.y -= 5;
       returnDown(5);
     }
+
+    bricks.forEach(function(brick){
+      brick.draw();
+      brick.move();
+    });
   
   }
   setInterval(draw,10);
+  setInterval(clone,5000);
 
   function returnDown(val) {
     setTimeout(function(e) {
       player.y += val;
     }, 300);
   }
+
   </script>
 </body>
 </html>
