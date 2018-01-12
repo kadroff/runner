@@ -8,7 +8,7 @@
   </style>
 </head>
 <body>
-<canvas id="myCanvas" width="400" height="320"></canvas>
+<canvas id="myCanvas" width="700" height="600"></canvas>
 <script>
   var canvas = document.getElementById("myCanvas");
   var ctx = canvas.getContext("2d")
@@ -19,7 +19,7 @@
     height: 55,
     draw: function() {
       ctx.beginPath();
-      ctx.rect(this.x,this.y,50,55);
+      ctx.rect(this.x, this.y, this.width, this.height);
       ctx.fillStyle = "green";
       ctx.fill();
       ctx.closePath();
@@ -30,11 +30,13 @@
   var brick = {
     x: 280,
     y: 200,
+    width: 50,
+    height: 45,
     dx: 1,
     dy: -1,
     draw: function() {
       ctx.beginPath();
-      ctx.rect(this.x, this.y, 50, 45);
+      ctx.rect(this.x, this.y, this.width, this.height);
       ctx.fillStyle = "#0095DD";
       ctx.fill();
       ctx.closePath();
@@ -96,16 +98,27 @@
     bricks.forEach(function(brick){
       brick.draw();
       brick.move();
+
+      if (isCollide(player, brick)) {
+        document.location.reload();
+        console.log("work");
+      } 
     });
-  
   }
-  setInterval(draw,10);
-  setInterval(clone,5000);
+  setInterval(draw, 10);
+  setInterval(clone, 5000)
 
   function returnDown(val) {
     setTimeout(function(e) {
       player.y += val;
     }, 300);
+  }
+
+  function isCollide(rect1, rect2) {
+    return (rect1.x < rect2.x + rect2.width &&
+            rect1.x + rect1.width > rect2.x &&
+            rect1.y < rect2.y + rect2.height &&
+            rect1.height + rect1.y > rect2.y);
   }
 
   </script>
