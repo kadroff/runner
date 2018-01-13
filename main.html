@@ -8,15 +8,16 @@
   </style>
 </head>
 <body>
-<canvas id="myCanvas" width="700" height="600"></canvas>
+<canvas id="myCanvas" width="480" height="320"></canvas>
 <script>
   var canvas = document.getElementById("myCanvas");
-  var ctx = canvas.getContext("2d")
+  var ctx = canvas.getContext("2d");
   var player = {
     x: 20,
     y: 200,
     width: 50,
     height: 55,
+    img: document.getElementById('source'),
     draw: function() {
       ctx.beginPath();
       ctx.rect(this.x, this.y, this.width, this.height);
@@ -28,7 +29,7 @@
 
   var bricks = [];
   var brick = {
-    x: 280,
+    x: 500,
     y: 200,
     width: 50,
     height: 45,
@@ -46,6 +47,13 @@
     }
   }
 
+  function floor() {
+    ctx.beginPath();
+    ctx.rect(0, 255, 480, 1);
+    ctx.fillStyle = "#000";
+    ctx.fill();
+    ctx.closePath();
+  }
   function clone() {
     var newBrick = Object.assign({}, brick);
     bricks.push(newBrick);
@@ -82,6 +90,7 @@
   function draw() {
     ctx.clearRect(0,0, canvas.width, canvas.height)
     player.draw();
+    floor();
 
     if(rightPressed && player.x < canvas.width-player.width) {
       player.x += 2;

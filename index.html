@@ -1,0 +1,154 @@
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Gamedev Canvas</title>
+  <style>
+    * { padding: 0; margin: 0; background-image: url("background_canvas.jpg"); background-position: center center }
+    canvas { background-image: url("background2.png"); display: block; margin: 0 auto; }
+  </style>
+</head>
+<body>
+<canvas id="myCanvas" width="270" height="600"></canvas>
+<audio id="motor" src="formula.mp3"></audio>
+<img id="source" src="ferrari.gif">
+<script>
+  var canvas = document.getElementById("myCanvas");
+  var ctx = canvas.getContext("2d");
+  document.getElementById('motor').play();
+  
+  var player = {
+    x: 30,
+    y: 50,
+    width: 26,
+    height: 64,
+    speed: 3,
+    img: document.getElementById('source'),
+    draw: function() {
+      ctx.beginPath();
+      ctx.drawImage(this.img,this.x, this.y);
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+  // var paddleHeight = 10;
+  // var paddleWidth = 75;
+  // var paddleX = 30;
+  // var paddleY = 50;
+  // var speed = 3;
+
+  var bricks = [];
+
+  class Brick {
+    constructor(x) {
+      this.x = x;
+      this.y = 0;
+      this.width = 28;
+      this.height = 62;
+      this.speed = 1;
+      this.img = new Image();
+      this.img.src = 'red_bull.gif';
+    }
+
+    draw() {
+      this.y += this.speed;
+      ctx.beginPath();
+      // ctx.rect(, , this.width, this.height);
+      ctx.drawImage(this.img, this.x, this.y);
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+
+  // move
+  var rightPressed = false;
+  var leftPressed = false;
+  var upPressed = false;
+  var downPressed = false;
+
+  document.addEventListener("keydown", keyDownHandler, false);
+  document.addEventListener("keyup", keyUpHandler, false);
+  
+  function keyDownHandler(e) {
+    if(e.keyCode == 39) {
+      rightPressed = true;
+    } else if(e.keyCode == 37) {
+        leftPressed = true;
+    } else if(e.keyCode == 40) {
+      upPressed = true;
+    } else if (e.keyCode == 38) {
+      downPressed = true;
+    }
+  }
+
+  function keyUpHandler(e) {
+    if(e.keyCode == 39) {
+        rightPressed = false;
+    } else if(e.keyCode == 37) {
+        leftPressed = false;
+    } else if(e.keyCode == 40) {
+      upPressed = false;
+    } else if (e.keyCode == 38) {
+      downPressed = false;
+    }
+  }
+  
+  // function drawCar() {
+  //   ctx.beginPath();
+  //   ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
+  //   ctx.fillStyle = "#70C1B3";
+  //   ctx.fill();
+  //   ctx.closePath();
+  // }
+
+  // Генерируем препятствия
+  setInterval(function() {
+    bricks.push(new Brick(getRandomX()));
+  }, 2000);
+
+  function draw() {
+    ctx.clearRect(0,0, canvas.width, canvas.height)
+    player.draw();
+
+    if(rightPressed && player.x < canvas.width-player.width) {
+      player.x += 2;
+    }
+    else if(leftPressed && player.x > 0) {
+      player.x -= 2;
+    }
+
+    if(upPressed && player.y < canvas.height-player.height) {
+      player.y += 3;
+    }
+    else if(downPressed && player.y > 0) {
+      player.y -= 3;
+    }
+
+    // @TODO Здесь нужно дописать удаление блока, когда он выходит за пределы игрового поля
+
+    bricks.forEach(function(brick) {
+      brick.draw();
+
+      if (isCollide(player, brick)) {
+        document.location.reload();
+      } 
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+
+  function isCollide(rect1, rect2) {
+    return (rect1.x < rect2.x + rect2.width &&
+            rect1.x + rect1.width > rect2.x &&
+            rect1.y < rect2.y + rect2.height &&
+            rect1.height + rect1.y > rect2.y);
+  }
+
+  function getRandomX() {
+    return(Math.floor(Math.random() * 115) + 60)
+  }
+</script>
+
+</body>
+</html>
